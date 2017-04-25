@@ -3,12 +3,12 @@ package com.reacKafka.utils
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 
 /**
-* Created by admin on 17/01/17.
-*/
+ * Created by admin on 17/01/17.
+ */
 class Stat {
   var ds = new DescriptiveStatistics();
 
-  def add(num: Int): Unit = ds.addValue(num)
+  def add(num: Long): Unit = ds.addValue(num)
 
   override def toString =
     f"sampleSize:$count \t min:$min%1.0f \t max:$max%1.0f \t mean:$maen%1.0f \t median:$median%1.0f\t p95:$p95%1.0f\t p99:$p99%1.0f"

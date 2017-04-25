@@ -7,25 +7,29 @@ import scala.util.Random
 import akka.pattern.pipe
 
 /**
-  * Created by admin on 17/01/17.
-  */
+ * Created by admin on 17/01/17.
+ */
 class Receiver extends Actor {
   val stat = new Stat
-  val n = 10000
+  val n = 2000
   var partitions = Set[String]()
-  var lastPrint = System.currentTimeMillis()
+  var lastPrint = System.nanoTime()
 
   override def receive: Receive = {
-    case msg@Msg(inputTime, topic, partition) =>
+    case msg @ Msg(inputTime, topic, partition) =>
       partitions += partition
 
-      val d = time() - inputTime
+      val durationMicros = (time() - inputTime) / 1000
 
-      stat.add(d.toInt)
+      stat.add(durationMicros)
+
+      //      println(s"# ${stat.count} $msg took $durationMicros micros") // FIXME
+
       if (stat.count % n == 0) {
-        val newTime = System.currentTimeMillis()
+        val newTime = time()
 
-        println(stat.toString + " " + (n.toDouble / (newTime - lastPrint)) * 1000 ) //+ " " + partitions)
+        val batchDurationMillis = (newTime - lastPrint) / 1000 / 1000
+        println(s"$stat msg/s:${(n * 1000 / batchDurationMillis)} partitions: ${partitions.size}")
         partitions = Set()
         lastPrint = newTime
         stat.flush()
@@ -34,7 +38,7 @@ class Receiver extends Actor {
       sender() ! Commit(msg.requestId)
   }
 
-  def time() = System.currentTimeMillis()
+  def time() = System.nanoTime()
 
   override def postStop(): Unit = {
     println(stat.toString)

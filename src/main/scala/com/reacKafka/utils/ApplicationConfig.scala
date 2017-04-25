@@ -19,11 +19,11 @@ object ApplicationConfig {
 
   }
 
-  object kafka {
-    val kafka = config.getConfig("kafka")
-
-    object producer {
-      val producer = kafka.getConfig("producer")
-    }
-  }
+  //  object kafka {
+  //    val kafka = config.getConfig("kafka")
+  //
+  //    object producer {
+  //      val producer = kafka.getConfig("producer")
+  //    }
+  //  }
 }
