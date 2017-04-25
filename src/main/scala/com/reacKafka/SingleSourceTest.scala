@@ -13,16 +13,15 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-/**
- * Created by admin on 03/01/17.
- */
+
 object SingleSourceTest extends App {
   implicit val system = ActorSystem()
 
   val receiver = system.actorOf(Props(classOf[Receiver]))
 
+  val bootstrapServers = "192.168.100.100:9092"
   val consumerSettings = ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
-    .withBootstrapServers("127.0.0.1:9092")
+    .withBootstrapServers("192.168.100.100:9092")
     .withGroupId("ReactiveConsumer")
 
   implicit val executionContext = system.dispatchers.lookup("akka.actor.default-dispatcher")
@@ -42,7 +41,7 @@ object SingleSourceTest extends App {
     .mapAsync(3)(_.commitScaladsl())
     .runWith(Sink.ignore)(ActorMaterializer.create(system))
 
-  new TestProducer().run()
+  new TestProducer(bootstrapServers).run()
 
   def send(msg: Msg) = ask(receiver, msg)(1 seconds)
 

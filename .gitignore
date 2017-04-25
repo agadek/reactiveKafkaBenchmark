@@ -21,7 +21,6 @@ dist/*
 target/
 lib_managed/
 src_managed/
-project/boot/
 project/plugins/project/
 
 # Scala-IDE specific
@@ -30,7 +29,6 @@ project/plugins/project/
 
 .gitignore
 .idea/
-build.sbt
 hs_err_pid3995.log
-project/
-src/
+project/target
+project/project
